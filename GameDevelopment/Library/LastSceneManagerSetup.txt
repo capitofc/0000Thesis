@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/Scene/Manager/Persistent_Scene.unity
+- path: Assets/Scene/Kalat Scenes/Kalat_Scenes.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0
