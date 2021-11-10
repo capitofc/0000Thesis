@@ -56,12 +56,12 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Script\Player\Player Data Flow\CreatePlayerData.cs" />
     <Compile Include="Assets\Script\Player\Player Data Flow\PlayerData.cs" />
     <Compile Include="Assets\Script\Player\Player Data Flow\SaveProgress.cs" />
     <Compile Include="Assets\Script\Player\Player Data Flow\SaveData.cs" />
     <Compile Include="Assets\Script\Player\Player Data Flow\LoadProgress.cs" />
     <Compile Include="Assets\Script\Player\Player Data Flow\PlayerExpCalculator.cs" />
-    <Compile Include="Assets\Script\Player\Player Data Flow\CreatePlayerData.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
