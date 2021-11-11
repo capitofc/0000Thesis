@@ -17,10 +17,14 @@ public class CharacterSelection : MonoBehaviour
     [Header("UI Objects")]
     [SerializeField] GameObject moneyUIText;
     [SerializeField] GameObject modelName;
+    [SerializeField] GameObject purchase_Error;
+    [SerializeField] GameObject purchase_Success;
 
     private int PenguinReferencePointer = 0;
     private Dictionary<int, int> PenguinPrice = new Dictionary<int, int>();
     private Dictionary<int, string> PenguinName = new Dictionary<int, string>();
+
+  
 
     private void Start()
     {
@@ -61,6 +65,9 @@ public class CharacterSelection : MonoBehaviour
             actionButton.GetComponent<Button>().interactable = true;
         }
         PenguinReferencePointer = pengiunRef;
+
+        InitPenguin(PenguinReferencePointer);
+
         UpdateUiObjectsValue();
     }
 
@@ -118,7 +125,15 @@ public class CharacterSelection : MonoBehaviour
                 PlayerData.instance.UnlockCharacter[PenguinReferencePointer] = true;
                 ButtonPenguinScript(PenguinReferencePointer);
                 UpdateUiObjectsValue();
+
+                purchase_Success.SetActive(true);
+
+
                 //SAVE DATA ULET
+            }
+            else
+            {
+                purchase_Error.SetActive(true);
             }
         }
     }
