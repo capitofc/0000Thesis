@@ -14,6 +14,6 @@ public class MoneyCounter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        txt.text = "₱" + PlayerData.instance.playerMoney;
+        txt.text = "₱" + Database.instance.playerMoney;
     }
 }

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class PlayerData : MonoBehaviour
+public class PlayerData
 {
-    public static PlayerData instance;
     public string playerName = null;
     public int playerMoney = 0;
     public int playerLevel = 1;
@@ -13,13 +12,17 @@ public class PlayerData : MonoBehaviour
     public float playerLevelCapacity = 10;
     public bool[] UnlockedStages = {true, false, false, false, false};
     public bool[] UnlockCharacter = {true, false, false, true, false, false, true, false, false};
-    public int UsedCharacter = 1;
+    public int UsedCharacter = 0;
 
-    private void Start()
+    public PlayerData(Database data)
     {
-        if(instance == null)
-        {
-            instance = this;
-        }
+        playerName = data.playerName;
+        playerMoney = data.playerMoney;
+        playerLevel = data.playerLevel;
+        playerCurrentExp = data.playerCurrentExp;
+        playerLevelCapacity = data.playerLevelCapacity;
+        UnlockedStages = data.UnlockedStages;
+        UnlockCharacter = data.UnlockCharacter;
+        UsedCharacter = data.UsedCharacter;
     }
 }

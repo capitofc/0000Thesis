@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class CharacterSelection : MonoBehaviour
 {
+    public static CharacterSelection instance;
 
     [Header("Models")]
     [SerializeField] GameObject[] Models;
@@ -31,24 +32,23 @@ public class CharacterSelection : MonoBehaviour
         InitPenguinName();
         InitPenguinPrice();
         UpdateUiObjectsValue();
-        PlayerData.instance.UsedCharacter = 0;
-        InitPenguin(PlayerData.instance.UsedCharacter);
+        instance = this;
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            PlayerData.instance.playerMoney += 100;
+            Database.instance.playerMoney += 100;
             UpdateUiObjectsValue();
         }
     }
 
     public void ButtonPenguinScript(int pengiunRef)
     {
-        if (PlayerData.instance.UnlockCharacter[pengiunRef])
+        if (Database.instance.UnlockCharacter[pengiunRef])
         {
-            if (pengiunRef == PlayerData.instance.UsedCharacter)
+            if (pengiunRef == Database.instance.UsedCharacter)
             {
                 buttonDescription.GetComponent<TextMeshProUGUI>().text = "USED";
                 actionButton.GetComponent<Button>().interactable = false;
@@ -65,9 +65,7 @@ public class CharacterSelection : MonoBehaviour
             actionButton.GetComponent<Button>().interactable = true;
         }
         PenguinReferencePointer = pengiunRef;
-
         InitPenguin(PenguinReferencePointer);
-
         UpdateUiObjectsValue();
     }
 
@@ -93,7 +91,7 @@ public class CharacterSelection : MonoBehaviour
         PenguinName.Add(8, "Maze2Model");
     }
 
-    private void InitPenguin(int _index)
+    public void InitPenguin(int _index)
     {
         for(int i = 0; i < Models.Length; i++)
         {
@@ -112,23 +110,24 @@ public class CharacterSelection : MonoBehaviour
     {
         if (buttonDescription.GetComponent<TextMeshProUGUI>().text.Equals("SELECT"))
         {
-            PlayerData.instance.UsedCharacter = PenguinReferencePointer;
-            InitPenguin(PlayerData.instance.UsedCharacter);
+            Database.instance.UsedCharacter = PenguinReferencePointer;
+            InitPenguin(Database.instance.UsedCharacter);
             ButtonPenguinScript(PenguinReferencePointer);
-            //SaveData.SaveDataProgress(Player.instance) - Wag mo muna i on to. Magugulo ung database naten.
+            Debug.Log($"Saving new selected penguin -- {PenguinName[PenguinReferencePointer]}");
+            SaveData.SaveDataProgress(Database.instance);
         }
         else
         {
-            if(PlayerData.instance.playerMoney >= PenguinPrice[PenguinReferencePointer])
+            if(Database.instance.playerMoney >= PenguinPrice[PenguinReferencePointer])
             {
-                PlayerData.instance.playerMoney -= PenguinPrice[PenguinReferencePointer];
-                PlayerData.instance.UnlockCharacter[PenguinReferencePointer] = true;
+                SoundScript.instance.playSuccessfulFx();
+                Database.instance.playerMoney -= PenguinPrice[PenguinReferencePointer];
+                Database.instance.UnlockCharacter[PenguinReferencePointer] = true;
                 ButtonPenguinScript(PenguinReferencePointer);
                 UpdateUiObjectsValue();
-
                 purchase_Success.SetActive(true);
-
-
+                Debug.Log($"Saving new unlocked penguin -- {PenguinName[PenguinReferencePointer]}");
+                SaveData.SaveDataProgress(Database.instance);
                 //SAVE DATA ULET
             }
             else
@@ -140,7 +139,12 @@ public class CharacterSelection : MonoBehaviour
 
     private void UpdateUiObjectsValue()
     {
-        moneyUIText.GetComponent<TextMeshProUGUI>().text = PlayerData.instance.playerMoney.ToString();
+        moneyUIText.GetComponent<TextMeshProUGUI>().text = Database.instance.playerMoney.ToString();
         modelName.GetComponent<TextMeshProUGUI>().text = PenguinName[PenguinReferencePointer];
+    }
+
+    public string GetPenguinName(int index)
+    {
+        return PenguinName[index];
     }
 }

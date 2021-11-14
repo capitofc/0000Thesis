@@ -3,42 +3,62 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine.SceneManagement;
 
 public static class CreatePlayerData
 {
-    private static string path = Application.persistentDataPath + "/GameData.Thesis";
+    public static string path = SaveData.GetPath();
+    public static List<PlayerData> PlayerDataList = SaveData.GetPlayerDataList();
 
-    public static void CreatePlayer(string playerName)
+    private static bool isExist(string playerName)
     {
-        bool isExist = false;
+        SaveData.LoadData();
+        bool status = false;
         if (File.Exists(path))
         {
-            BinaryFormatter formatter = new BinaryFormatter();
-            FileStream stream = new FileStream(path, FileMode.Open);
-            List<PlayerData> PlayerDataList = formatter.Deserialize(stream) as List<PlayerData>;
-            foreach (PlayerData PlayerDataItem in PlayerDataList)
+            FileStream stream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite);
+            List<PlayerData> PlayerDataList = SaveData.GetPlayerDataList();
+            foreach (PlayerData data in PlayerDataList)
             {
-                if (PlayerDataItem.playerName.Equals(playerName))
+                if (data.playerName.Equals(playerName))
                 {
-                    isExist = true;
-                    break;
+                    return true;
                 }
             }
             stream.Close();
         }
-        else
-        {
-            PlayerData.instance.playerName = playerName;
-            SaveData.SaveDataProgress(PlayerData.instance);
-        }
+        return status;
+    }
 
-        if (isExist)
+    public static void CreatePlayer(Database player)
+    {
+        Debug.Log($"Creating player .... ");
+        if (isExist(player.playerName))
         {
-            //Show Panel that it exist
+            Debug.Log("Error: Player already exist");
         }
         else
         {
-            //Show panel that it is added successfully  
+            SaveData.LoadData();
+            List<PlayerData> dataList = SaveData.GetPlayerDataList();
+            if (dataList.Count == 0)
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                FileStream stream = new FileStream(path, FileMode.Create, FileAccess.ReadWrite);
+                dataList.Add(new PlayerData(player));
+                formatter.Serialize(stream, dataList);
+                stream.Close();
+            }
+            else
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                FileStream stream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite);
+                dataList.Add(new PlayerData(player));
+                formatter.Serialize(stream, dataList);
+                stream.Close();
+            }
+            SceneManager.LoadScene("Main_Menu_Scene");
         }
+        
     }
 }

@@ -8,13 +8,13 @@ public class MoneyManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            PlayerData.instance.playerMoney += 100;
+            Database.instance.playerMoney += 100;
         }
 
 
         else if (Input.GetKeyDown(KeyCode.F))
         {
-            PlayerData.instance.playerMoney -= 100;
+            Database.instance.playerMoney -= 100;
         }
 
     }

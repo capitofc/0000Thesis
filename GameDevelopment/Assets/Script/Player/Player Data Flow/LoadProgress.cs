@@ -7,7 +7,10 @@ using System.Runtime.Serialization.Formatters.Binary;
 public class LoadProgress : MonoBehaviour
 {
     public static LoadProgress instance;
-    private string path = Application.persistentDataPath + "/GameData.Thesis";
+
+    [Header("Player Data Prefab GameObject")]
+    [SerializeField] GameObject PlayerDataPrefab;
+    [SerializeField] GameObject PlayerDataPrefabPanel;
 
     private void Start()
     {
@@ -19,24 +22,39 @@ public class LoadProgress : MonoBehaviour
 
     public void InstantiatePlayerData(string PlayerName)
     {
-        BinaryFormatter formatter = new BinaryFormatter();
-        FileStream stream = new FileStream(path, FileMode.Open);
-        List<PlayerData> PlayerDataList = formatter.Deserialize(stream) as List<PlayerData>;
-        foreach(PlayerData PlayerDataItem in PlayerDataList)
+        SaveData.LoadData();
+        List<PlayerData> PlayerDataList = SaveData.GetPlayerDataList();
+        foreach(PlayerData player in PlayerDataList)
         {
-            if (PlayerDataItem.playerName.Equals(PlayerName))
+            if (player.playerName.Equals(PlayerName))
             {
-                PlayerData.instance.playerName = PlayerDataItem.playerName;
-                PlayerData.instance.playerMoney = PlayerDataItem.playerMoney;
-                PlayerData.instance.playerLevelCapacity = PlayerDataItem.playerLevelCapacity;
-                PlayerData.instance.playerLevel = PlayerDataItem.playerLevel;
-                PlayerData.instance.playerCurrentExp = PlayerDataItem.playerCurrentExp;
-                PlayerData.instance.UsedCharacter = PlayerDataItem.UsedCharacter;
-                PlayerData.instance.UnlockCharacter = PlayerDataItem.UnlockCharacter;
-                PlayerData.instance.UnlockedStages = PlayerDataItem.UnlockedStages;
+                Debug.Log($"Executing loaded player data ... {player.UsedCharacter}  Name: {player.playerName}");
+                Database.instance.playerName = player.playerName;
+                Database.instance.playerMoney = player.playerMoney;
+                Database.instance.playerLevelCapacity = player.playerLevelCapacity;
+                Database.instance.playerLevel = player.playerLevel;
+                Database.instance.playerCurrentExp = player.playerCurrentExp;
+                Database.instance.UsedCharacter = player.UsedCharacter;
+                Database.instance.UnlockCharacter = player.UnlockCharacter;
+                Database.instance.UnlockedStages = player.UnlockedStages;
                 break;
             }
         }
-        stream.Close();
+    }
+
+    public void SpawnExistingUser()
+    {
+        foreach(Transform child in PlayerDataPrefabPanel.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        SaveData.LoadData();
+        List<PlayerData> PlayerDataList = SaveData.GetPlayerDataList();
+        foreach (PlayerData PlayerDataItem in PlayerDataList)
+        {
+            GameObject player = PlayerDataPrefab;
+            player.GetComponent<PlayerDataPrefab>().SetPrefabNameText(PlayerDataItem.playerName);
+            Instantiate(player, PlayerDataPrefabPanel.transform);
+        }
     }
 }

@@ -16,15 +16,15 @@ public class SaveProgress : MonoBehaviour
 
     public void UpdatePlayerData(string playerName, int playerMoney, int playerLevel, float playerCurrentExp, float playerLevelCapacity, bool[] UnlockedStages, bool[] UnlockedCharacter, int UseCharacter)
     {
-        PlayerData.instance.playerName = playerName;
-        PlayerData.instance.playerMoney = playerMoney;
-        PlayerData.instance.playerLevel = playerLevel;
-        PlayerData.instance.playerCurrentExp = playerCurrentExp;
-        PlayerData.instance.playerLevelCapacity = playerLevelCapacity;
-        PlayerData.instance.UnlockedStages = UnlockedStages;
-        PlayerData.instance.UnlockCharacter = UnlockedCharacter;
-        PlayerData.instance.UsedCharacter = UseCharacter;
+        Database.instance.playerName = playerName;
+        Database.instance.playerMoney = playerMoney;
+        Database.instance.playerLevel = playerLevel;
+        Database.instance.playerCurrentExp = playerCurrentExp;
+        Database.instance.playerLevelCapacity = playerLevelCapacity;
+        Database.instance.UnlockedStages = UnlockedStages;
+        Database.instance.UnlockCharacter = UnlockedCharacter;
+        Database.instance.UsedCharacter = UseCharacter;
 
-        SaveData.SaveDataProgress(PlayerData.instance);
+        SaveData.SaveDataProgress(Database.instance);
     }
 }
